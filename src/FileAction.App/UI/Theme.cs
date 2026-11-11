@@ -11,34 +11,34 @@ namespace FileAction.App.UI;
 internal static class Theme
 {
     private static readonly Palette DarkPalette = new(
-        Backdrop: Color.FromArgb(0xE6, 0x16, 0x16, 0x1B),
-        BackdropEdge: Color.FromArgb(0x26, 0xFF, 0xFF, 0xFF),
-        Slice: Color.FromArgb(0xFF, 0x26, 0x26, 0x2E),
-        SliceEdge: Color.FromArgb(0x14, 0xFF, 0xFF, 0xFF),
-        Hub: Color.FromArgb(0xFF, 0x1D, 0x1D, 0x24),
-        Panel: Color.FromArgb(0xF7, 0x1F, 0x1F, 0x26),
-        PanelEdge: Color.FromArgb(0x24, 0xFF, 0xFF, 0xFF),
+        Backdrop: Color.FromArgb(0xD6, 0x21, 0x2B, 0x3B),
+        BackdropEdge: Color.FromArgb(0x48, 0xFF, 0xFF, 0xFF),
+        Slice: Color.FromArgb(0xD9, 0x2A, 0x34, 0x45),
+        SliceEdge: Color.FromArgb(0x32, 0xFF, 0xFF, 0xFF),
+        Hub: Color.FromArgb(0xE2, 0x1D, 0x26, 0x36),
+        Panel: Color.FromArgb(0xC8, 0x24, 0x2E, 0x40),
+        PanelEdge: Color.FromArgb(0x45, 0xFF, 0xFF, 0xFF),
         Text: Color.FromRgb(0xF5, 0xF5, 0xF7),
         Muted: Color.FromRgb(0x9C, 0x9C, 0xA8),
         Track: Color.FromArgb(0x30, 0xFF, 0xFF, 0xFF),
-        Page: Color.FromRgb(0x1C, 0x1C, 0x21),
-        Card: Color.FromRgb(0x27, 0x27, 0x2E),
+        Page: Color.FromRgb(0x10, 0x17, 0x22),
+        Card: Color.FromArgb(0xA8, 0x30, 0x3D, 0x52),
         Hover: Color.FromArgb(0x18, 0xFF, 0xFF, 0xFF),
         Shadow: 0.55);
 
     private static readonly Palette LightPalette = new(
-        Backdrop: Color.FromArgb(0xEE, 0xF6, 0xF6, 0xF9),
-        BackdropEdge: Color.FromArgb(0x1A, 0x00, 0x00, 0x00),
-        Slice: Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF),
-        SliceEdge: Color.FromArgb(0x14, 0x00, 0x00, 0x00),
-        Hub: Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF),
-        Panel: Color.FromArgb(0xFA, 0xFB, 0xFB, 0xFD),
-        PanelEdge: Color.FromArgb(0x1C, 0x00, 0x00, 0x00),
+        Backdrop: Color.FromArgb(0xD8, 0xF0, 0xF7, 0xFD),
+        BackdropEdge: Color.FromArgb(0x38, 0xFF, 0xFF, 0xFF),
+        Slice: Color.FromArgb(0xC9, 0xFF, 0xFF, 0xFF),
+        SliceEdge: Color.FromArgb(0x32, 0xFF, 0xFF, 0xFF),
+        Hub: Color.FromArgb(0xE2, 0xFF, 0xFF, 0xFF),
+        Panel: Color.FromArgb(0xBB, 0xF9, 0xFC, 0xFF),
+        PanelEdge: Color.FromArgb(0x42, 0xFF, 0xFF, 0xFF),
         Text: Color.FromRgb(0x1B, 0x1B, 0x22),
         Muted: Color.FromRgb(0x6E, 0x6E, 0x7A),
         Track: Color.FromArgb(0x1E, 0x00, 0x00, 0x00),
-        Page: Color.FromRgb(0xF3, 0xF3, 0xF6),
-        Card: Color.FromRgb(0xFF, 0xFF, 0xFF),
+        Page: Color.FromRgb(0xE7, 0xF0, 0xF8),
+        Card: Color.FromArgb(0xA8, 0xFF, 0xFF, 0xFF),
         Hover: Color.FromArgb(0x0E, 0x00, 0x00, 0x00),
         Shadow: 0.22);
 
@@ -77,18 +77,18 @@ internal static class Theme
 
     public static bool IsDark { get; private set; } = true;
 
-    public static Brush Backdrop => Solid(_palette.Backdrop);
+    public static Brush Backdrop => Glass(_palette.Backdrop);
     public static Brush BackdropEdge => Solid(_palette.BackdropEdge);
-    public static Brush Slice => Solid(_palette.Slice);
+    public static Brush Slice => Glass(_palette.Slice);
     public static Brush SliceEdge => Solid(_palette.SliceEdge);
-    public static Brush Hub => Solid(_palette.Hub);
-    public static Brush Panel => Solid(_palette.Panel);
+    public static Brush Hub => Glass(_palette.Hub);
+    public static Brush Panel => Glass(_palette.Panel);
     public static Brush PanelBorder => Solid(_palette.PanelEdge);
     public static Brush Text => Solid(_palette.Text);
     public static Brush Muted => Solid(_palette.Muted);
     public static Brush Track => Solid(_palette.Track);
-    public static Brush Page => Solid(_palette.Page);
-    public static Brush Card => Solid(_palette.Card);
+    public static Brush Page => Glass(_palette.Page);
+    public static Brush Card => Glass(_palette.Card);
     public static Brush Hover => Solid(_palette.Hover);
     public static Brush AccentSoft => Solid(Color.FromArgb(IsDark ? (byte)0x38 : (byte)0x26, AccentColor.R, AccentColor.G, AccentColor.B));
 
@@ -126,6 +126,15 @@ internal static class Theme
     }
 
     private static SolidColorBrush Solid(Color color) => Freeze(new SolidColorBrush(color));
+
+    private static LinearGradientBrush Glass(Color color) =>
+        Freeze(new LinearGradientBrush(Lift(color, 0x24), color, new Point(0, 0), new Point(0, 1)));
+
+    private static Color Lift(Color color, byte amount) => Color.FromArgb(
+        color.A,
+        (byte)(color.R + (255 - color.R) * amount / 255),
+        (byte)(color.G + (255 - color.G) * amount / 255),
+        (byte)(color.B + (255 - color.B) * amount / 255));
 
     private static T Freeze<T>(T brush)
         where T : Freezable
